@@ -1,0 +1,170 @@
+TASK TITLE :  Run a Simple Java Maven Build Job in Jenkins
+
+Objective:
+Learn how to use Jenkins to build a simple Java application using Maven — your first step into CI/CD.
+
+Step 1: Install Required Tools on Your Local Machine
+
+1.1 Install Java
+- First, ensure that Java is installed on your machine. You can check the version by running:
+  ```bash
+  java -version
+  ```
+- If it's not installed, download and install **Java 8 or 11** from [Oracle](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html).
+
+1.2 Install Maven
+- Download and install **Apache Maven**. Follow these steps:
+  1. Download the Maven zip from [Apache Maven Downloads](https://maven.apache.org/download.cgi).
+  2. Unzip the archive to a directory (e.g., `C:\maven`).
+  3. Add the `bin` directory of Maven to your `PATH` environment variable.
+  
+  On Windows, add this to your system `PATH`:
+  ```plaintext
+  C:\maven\bin
+  ```
+
+- Check if Maven is installed correctly by running:
+  ```bash
+  mvn -v
+  ```
+
+1.3 Install Git (If not already installed)
+- Download and install Git from [Git Downloads](https://git-scm.com/downloads).
+- Check the installation by running:
+  ```bash
+  git --version
+  ```
+
+---
+
+Step 2: Set Up a Java Maven Project Locally
+
+2.1 Create a Project Directory
+- Create a directory on your machine for the project. For example:
+  ```bash
+  mkdir hello-java-maven
+  cd hello-java-maven
+  ```
+
+2.2 Create a Java Program (HelloWorld.java)
+- In the `src/main/java` directory, create a `HelloWorld.java` file with the following content:
+  ```java
+  public class HelloWorld {
+      public static void main(String[] args) {
+          System.out.println("Hello, Jenkins + Maven!");
+      }
+  }
+  ```
+
+2.3 Create the `pom.xml` File
+- In the project root directory, create a `pom.xml` file with the following content:
+  ```xml
+  <project xmlns="http://maven.apache.org/POM/4.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.example</groupId>
+      <artifactId>hello</artifactId>
+      <version>1.0</version>
+      <build>
+          <plugins>
+              <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>3.8.1</version>
+                  <configuration>
+                      <source>1.8</source>
+                      <target>1.8</target>
+                  </configuration>
+              </plugin>
+          </plugins>
+      </build>
+  </project>
+  ```
+
+---
+
+Step 3: Build the Project Locally Using Maven
+
+3.1 Run Maven to Build the Project
+- Open a terminal in your project directory and run the following command:
+  ```bash
+  mvn clean package
+  ```
+
+- This command will clean any existing build files and then package the project into a `.jar` file under the `target/` directory.
+
+3.2 Run the Program
+- After the build is successful, run the program using the following command:
+  ```bash
+  java -cp target/hello-1.0.jar HelloWorld
+  ```
+
+- This should print:
+  ```plaintext
+  Hello, Jenkins + Maven!
+  ```
+
+---
+
+Step 4: Set Up Jenkins for Continuous Integration (CI)
+
+4.1 Install Jenkins
+- If Jenkins is not already installed on your machine, follow these instructions to install it:
+  - **Windows**: Download Jenkins from [Jenkins Downloads](https://www.jenkins.io/download/) and run the installer.
+  - **Docker**: If you're using Docker, you can start Jenkins using:
+    ```bash
+    docker run -p 8080:8080 jenkins/jenkins:lts
+    ```
+
+4.2 Create a New Jenkins Job
+- Open Jenkins on your browser (default URL: `http://localhost:8080`).
+- From the Jenkins Dashboard, click on `New Item`.
+- Enter the job name `hello-java-maven-job`.
+- Select `Freestyle project`, then click `OK`.
+
+4.3 Configure the Source Code Management
+- Under **Source Code Management**, select **Git**.
+- Provide the URL of your GitHub repository, or if you're working locally, use the `local` directory path:
+  ```bash
+  file://path/to/your/project
+  ```
+
+4.4 Configure the Build Step
+- Under **Build**:
+  - Select **Invoke top-level Maven targets**.
+  - Set the **Goals** field to `clean package`.
+  - If necessary, configure the **Maven version** in Jenkins under `Manage Jenkins` -> `Global Tool Configuration`.
+
+4.5 Save and Build the Job
+- Click `Save` and then click `Build Now`.
+- Jenkins will trigger the build process using Maven, and it should display a green successful build.
+
+---
+
+Step 5: Verify the Build in Jenkins
+
+5.1 Check Console Output
+- After the build finishes, go to **Build History** on the job page and click on the latest build.
+- You should see the message:
+  ```plaintext
+  [INFO] BUILD SUCCESS
+  ```
+
+5.2 Ensure the Build Was Successful
+- Make sure the console output shows that the `clean package` command ran without errors, and that the `.jar` file was created.
+
+---
+
+Step 6: Troubleshooting
+
+6.1 Common Errors and Fixes
+- **Error: Maven not found**: Ensure Maven is correctly installed on Jenkins and configured in the **Global Tool Configuration** section.
+- **Error: Missing `pom.xml`**: Make sure that the `pom.xml` is placed in the root of the project directory (not inside `src/main/java`).
+
+---
+
+Conclusion
+
+By following these steps, you have successfully created and built a **Java Maven project** locally and configured **Jenkins** to automate the build process with Continuous Integration (CI). This setup ensures that every change you make can be automatically tested and built, improving your development efficiency.
+
